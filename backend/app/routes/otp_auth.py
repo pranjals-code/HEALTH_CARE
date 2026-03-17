@@ -365,7 +365,7 @@ async def test_otp_connection():
         
         # Test SMS service
         sms_test = {
-            "twilio_configured": sms_service.is_configured(),
+            "twilio_configured": sms_service.is_configured,
             "test_message": "SMS service ready"
         }
         

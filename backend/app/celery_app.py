@@ -12,8 +12,8 @@ logger = get_logger(__name__)
 
 celery_app = Celery(
     'healthcare_system',
-    broker=os.getenv('REDIS_URL', 'redis://localhost:6379/0'),
-    backend=os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    broker=os.getenv('CELERY_BROKER_URL', os.getenv('REDIS_URL', 'redis://localhost:6379/1')),
+    backend=os.getenv('CELERY_RESULT_BACKEND', os.getenv('REDIS_URL', 'redis://localhost:6379/2'))
 )
 
 celery_app.conf.update(
