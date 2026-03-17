@@ -1,6 +1,7 @@
 """
 SMS Service - Send SMS via Twilio
 """
+
 from twilio.rest import Client
 from typing import Tuple
 import os
@@ -29,50 +30,54 @@ class SMSService:
                 logger.warning("Twilio initialization error: %s", str(e))
         else:
             logger.warning("Twilio not configured in .env")
-    
+
     def send_otp_sms(self, phone_number: str, otp: str) -> Tuple[bool, str]:
         """Send OTP via SMS for registration"""
         if not self.is_configured:
             return False, "SMS service not configured"
-        
+
         try:
             message = self.client.messages.create(
                 body=f"Your Healthcare System verification code is: {otp}\n\nValid for 5 minutes. Do not share.",
                 from_=self.twilio_phone,
-                to=phone_number
+                to=phone_number,
             )
-            logger.info("Registration SMS sent to %s | Message: %s", phone_number, message.sid)
+            logger.info(
+                "Registration SMS sent to %s | Message: %s", phone_number, message.sid
+            )
             return True, message.sid
-        
+
         except Exception as e:
             error_msg = str(e)
             logger.error("SMS send failed to %s: %s", phone_number, error_msg)
             return False, error_msg
-    
+
     def send_password_reset_sms(self, phone_number: str, otp: str) -> Tuple[bool, str]:
         """Send OTP via SMS for password reset"""
         if not self.is_configured:
             return False, "SMS service not configured"
-        
+
         try:
             message = self.client.messages.create(
                 body=f"Your Healthcare System password reset code is: {otp}\n\nValid for 5 minutes. Do not share.",
                 from_=self.twilio_phone,
-                to=phone_number
+                to=phone_number,
             )
-            logger.info("Password reset SMS sent to %s | Message: %s", phone_number, message.sid)
+            logger.info(
+                "Password reset SMS sent to %s | Message: %s", phone_number, message.sid
+            )
             return True, message.sid
-        
+
         except Exception as e:
             error_msg = str(e)
             logger.error("Password reset SMS failed to %s: %s", phone_number, error_msg)
             return False, error_msg
-    
+
     def test_connection(self) -> bool:
         """Test Twilio connection"""
         if not self.is_configured:
             return False
-        
+
         try:
             account = self.client.api.accounts(self.account_sid).fetch()
             logger.info("Twilio connected: %s", account.friendly_name)
