@@ -121,6 +121,30 @@ If you want patient search enabled locally, make sure Elasticsearch is running o
 # If Elasticsearch is not running, set ELASTICSEARCH_ENABLED=False in .env.
 ```
 
+## Docker Run
+
+Use Docker Compose if you want the backend, PostgreSQL, and Redis to work together without manually wiring container networking.
+
+```bash
+cd /home/dev/HEALTH-CARE-SYSTEM
+docker compose up --build
+```
+
+Why plain `docker run` is not enough here:
+
+- the backend needs PostgreSQL and Redis running too
+- inside a container, `localhost` points to that same container, not your PostgreSQL container
+- the image does not bake in `.env`, so you must pass env vars explicitly
+
+If you still want to run only the backend image, pass the env file and make sure `DATABASE_URL` points to a reachable host:
+
+```bash
+docker build -t healthcare-backend ./backend
+docker run --rm -p 8000:8000 --env-file ./backend/.env healthcare-backend
+```
+
+For container-to-container networking, the database host should be the service/container name such as `db`, not `localhost`.
+
 ## API Endpoints
 
 ### Authentication
