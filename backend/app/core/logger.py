@@ -1,6 +1,7 @@
 """
 Centralized logging configuration for the application.
 """
+
 import logging
 import os
 from logging.config import dictConfig

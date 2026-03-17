@@ -2,6 +2,7 @@
 Patient microservice routes (placeholder for future expansion)
 Currently minimal - will expand in separate microservice
 """
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from uuid import UUID
 from app.database import get_db
@@ -19,11 +20,12 @@ router = APIRouter(prefix="/api/v1/patients", tags=["patients"])
 # This will be a separate microservice in production
 # For now, placeholder endpoints
 
+
 @router.get("/")
 async def list_patients(
     db=Depends(get_db),
     current_user: User = Depends(get_current_user),
-    _: bool = Depends(require_role("DOCTOR"))
+    _: bool = Depends(require_role("DOCTOR")),
 ):
     """
     List patients (DOCTOR, NURSE, etc.)
@@ -31,7 +33,7 @@ async def list_patients(
     """
     return {
         "message": "Patient listing - coming soon in patient microservice",
-        "status": "not_implemented"
+        "status": "not_implemented",
     }
 
 
@@ -41,7 +43,7 @@ async def search_patients(
     limit: int = Query(10, ge=1, le=50),
     db=Depends(get_db),
     current_user: User = Depends(get_current_user),
-    _: bool = Depends(require_role("DOCTOR"))
+    _: bool = Depends(require_role("DOCTOR")),
 ):
     """
     Search indexed patients through Elasticsearch.
@@ -78,9 +80,7 @@ async def search_patients(
 
 @router.get("/{patient_id}")
 async def get_patient(
-    patient_id: UUID,
-    db=Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    patient_id: UUID, db=Depends(get_db), current_user: User = Depends(get_current_user)
 ):
     """
     Get patient details
@@ -89,5 +89,5 @@ async def get_patient(
     return {
         "message": "Patient details - coming soon in patient microservice",
         "status": "not_implemented",
-        "patient_id": str(patient_id)
+        "patient_id": str(patient_id),
     }

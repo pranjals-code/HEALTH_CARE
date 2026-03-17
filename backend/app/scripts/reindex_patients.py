@@ -4,6 +4,7 @@ Reindex patients from PostgreSQL into Elasticsearch.
 Run from backend directory:
 python -m app.scripts.reindex_patients
 """
+
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
@@ -21,11 +22,7 @@ def reindex_patients() -> int:
 
     db: Session = SessionLocal()
     try:
-        rows = (
-            db.query(Patient, User)
-            .outerjoin(User, Patient.user_id == User.id)
-            .all()
-        )
+        rows = db.query(Patient, User).outerjoin(User, Patient.user_id == User.id).all()
 
         for patient, user in rows:
             index_patient_document(build_patient_document(patient, user))

@@ -2,6 +2,7 @@
 Main FastAPI application
 Microservice Architecture: Auth/RBAC Service + OTP/SMS Auth + Patient Module (stub)
 """
+
 import time
 from fastapi import FastAPI
 from fastapi import Request, Response
@@ -78,6 +79,7 @@ async def prometheus_http_middleware(request: Request, call_next):
             status_code=status,
         ).inc()
 
+
 # Include routers
 app.include_router(auth.router)
 app.include_router(otp_auth.router)  # OTP & Phone-based authentication
@@ -114,9 +116,9 @@ def read_root():
             "Password Reset via OTP",
             "Role-Based Access Control (RBAC)",
             "Background Task Processing (Celery)",
-            "Patient Management"
+            "Patient Management",
         ],
-        "api_docs": "/api/docs"
+        "api_docs": "/api/docs",
     }
 
 
@@ -130,18 +132,13 @@ def health_check():
             "jwt": True,
             "otp_sms": True,
             "rbac": True,
-            "celery_tasks": True
-        }
+            "celery_tasks": True,
+        },
     }
-    
 
 
 if __name__ == "__main__":
     import uvicorn
+
     logger.info("Starting FastAPI service on 0.0.0.0:8000")
-    uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=settings.DEBUG
-    )
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=settings.DEBUG)

@@ -1,6 +1,7 @@
 """
 Prometheus metrics for API and authentication monitoring.
 """
+
 from prometheus_client import Counter, Histogram
 
 # HTTP metrics

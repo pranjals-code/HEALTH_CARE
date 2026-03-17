@@ -1,6 +1,7 @@
 """
 Redis service for OTP and caching
 """
+
 import redis
 import os
 import json
@@ -30,7 +31,7 @@ class RedisService:
         key: str,
         value: Any,
         expiry_seconds: Optional[int] = None,
-        ttl: Optional[int] = None
+        ttl: Optional[int] = None,
     ) -> bool:
         """Set key with automatic expiry"""
         try:
@@ -50,7 +51,7 @@ class RedisService:
         except Exception as e:
             logger.error("Redis set error: %s", str(e))
             return False
-    
+
     def get(self, key: str) -> Optional[Any]:
         """Get value from Redis"""
         try:
@@ -71,7 +72,7 @@ class RedisService:
         except Exception as e:
             logger.error("Redis get error: %s", str(e))
             return None
-    
+
     def delete(self, key: str) -> bool:
         """Delete key from Redis"""
         try:
@@ -82,7 +83,7 @@ class RedisService:
         except Exception as e:
             logger.error("Redis delete error: %s", str(e))
             return False
-    
+
     def get_ttl(self, key: str) -> Optional[int]:
         """Get remaining TTL in seconds"""
         try:
@@ -92,7 +93,7 @@ class RedisService:
             return None
         except:
             return None
-    
+
     def is_healthy(self) -> bool:
         """Check Redis health"""
         try:

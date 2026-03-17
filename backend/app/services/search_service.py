@@ -1,6 +1,7 @@
 """
 Elasticsearch helpers for patient search.
 """
+
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -85,7 +86,10 @@ def build_patient_document(patient: Patient, user: Optional[User]) -> Dict[str, 
 def index_patient_document(document: Dict[str, Any]) -> None:
     """Upsert a patient document into Elasticsearch."""
     if not settings.ELASTICSEARCH_ENABLED:
-        logger.info("Elasticsearch is disabled; skipping patient indexing for %s", document["id"])
+        logger.info(
+            "Elasticsearch is disabled; skipping patient indexing for %s",
+            document["id"],
+        )
         return
 
     client = get_es_client()
