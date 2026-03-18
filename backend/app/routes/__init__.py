@@ -2,6 +2,7 @@
 Initialize app routes package
 """
 
-from . import auth, patients
+from . import auth, otp_auth, patients
+from . import media
 
-__all__ = ["auth", "patients"]
+__all__ = ["auth", "otp_auth", "patients", "media"]

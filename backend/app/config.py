@@ -3,7 +3,10 @@ Core configuration module for Healthcare System Backend
 Microservice Architecture: Auth/RBAC Service + OTP/SMS + Celery Background Tasks
 """
 
+from pathlib import Path
+from typing import Any
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from typing import List
 
 
@@ -16,6 +19,10 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # Uploads
+    UPLOAD_DIR: str = str(Path(__file__).resolve().parents[1] / "uploads")
+    MAX_UPLOAD_SIZE_MB: int = 50
 
     # Service
     SERVICE_NAME: str = "healthcare-auth-service"
@@ -59,6 +66,22 @@ class Settings(BaseSettings):
         if isinstance(self.ALLOWED_ORIGINS, str):
             return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
         return self.ALLOWED_ORIGINS
+
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def parse_debug(cls, value: Any) -> bool:
+        """Allow common env strings such as development/release."""
+        if isinstance(value, bool):
+            return value
+
+        if isinstance(value, str):
+            normalized = value.strip().lower()
+            if normalized in {"true", "1", "yes", "on", "debug", "development"}:
+                return True
+            if normalized in {"false", "0", "no", "off", "release", "production"}:
+                return False
+
+        return bool(value)
 
     class Config:
         env_file = ".env"
