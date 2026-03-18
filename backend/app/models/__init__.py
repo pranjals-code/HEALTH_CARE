@@ -15,6 +15,7 @@ from .auth import (
     AuditLog,
     Patient,
 )
+from .media import Media
 
 __all__ = [
     "BaseModel",
@@ -28,4 +29,5 @@ __all__ = [
     "StaffProfile",
     "AuditLog",
     "Patient",
+    "Media",
 ]

@@ -10,12 +10,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from app.config import settings
 from app.core.logger import configure_logging, get_logger
+from app.database import engine
+from app.models.media import Media
 from app.monitoring import (
     HTTP_REQUEST_DURATION_SECONDS,
     HTTP_REQUESTS_TOTAL,
     HTTP_RESPONSE_STATUS_TOTAL,
 )
-from app.routes import auth, otp_auth, patients
+from app.routes import auth, otp_auth, patients, media
 from app.services.search_service import ensure_patient_index
 
 configure_logging()
@@ -84,11 +86,14 @@ async def prometheus_http_middleware(request: Request, call_next):
 app.include_router(auth.router)
 app.include_router(otp_auth.router)  # OTP & Phone-based authentication
 app.include_router(patients.router)
+app.include_router(media.router)
 
 
 @app.on_event("startup")
 def startup_tasks() -> None:
     """Initialize optional external dependencies."""
+    Media.__table__.create(bind=engine, checkfirst=True)
+
     try:
         ensure_patient_index()
         logger.info("Elasticsearch patient index is ready")
@@ -111,6 +116,8 @@ def read_root():
         "environment": settings.ENVIRONMENT,
         "features": [
             "JWT Authentication",
+            "Protected File Uploads",
+            "User Upload Listing",
             "OTP/SMS Verification",
             "Phone-based Registration",
             "Password Reset via OTP",
